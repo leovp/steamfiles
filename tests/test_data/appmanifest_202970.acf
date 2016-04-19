@@ -1,0 +1,44 @@
+"AppState"
+{
+	"appid"		"202970"
+	"Universe"		"1"
+	"name"		"Call of Duty: Black Ops II"
+	"StateFlags"		"4"
+	"installdir"		"Call of Duty Black Ops II"
+	"LastUpdated"		"1457270801"
+	"UpdateResult"		"0"
+	"SizeOnDisk"		"12647996061"
+	"buildid"		"65428"
+	"LastOwner"		"76561198013962068"
+	"BytesToDownload"		"12013973904"
+	"BytesDownloaded"		"12013973904"
+	"AutoUpdateBehavior"		"0"
+	"AllowOtherDownloadsWhileRunning"		"0"
+	"UserConfig"
+	{
+		"language"		"russian"
+	}
+	"MountedDepots"
+	{
+		"202971"		"4216289445026440060"
+		"202972"		"44054127954755624"
+		"202973"		"131606837976547528"
+		"202974"		"8534031140633404768"
+		"202997"		"724981713647824764"
+		"202988"		"5488258952144004872"
+		"212938"		"596260357850385968"
+		"202998"		"216411158385088962"
+	}
+	"checkguid"
+	{
+		"0"		"t6sp.exe"
+	}
+	"DlcDownloads"
+	{
+		"202988"
+		{
+			"BytesDownloaded"		"1577721792"
+			"BytesToDownload"		"1577721792"
+		}
+	}
+}

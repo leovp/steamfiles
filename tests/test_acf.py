@@ -1,9 +1,9 @@
 import io
+import os
 import pytest
 from steamfiles import acf
 
-test_file_name = 'tests/test_data/appmanifest_202970.acf'
-
+test_file_name = os.path.join(os.path.dirname(__file__), 'test_data/appmanifest_202970.acf')
 
 @pytest.yield_fixture
 def acf_data():

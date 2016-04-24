@@ -5,6 +5,7 @@ from steamfiles import acf
 
 test_file_name = os.path.join(os.path.dirname(__file__), 'test_data/appmanifest_202970.acf')
 
+
 @pytest.yield_fixture
 def acf_data():
     with open(test_file_name, 'rt') as f:
@@ -26,3 +27,8 @@ def test_load_dump(acf_data):
     # Rewind to the beginning
     out_file.seek(0)
     assert out_file.read() == acf_data
+
+
+def test_loads_wrong_type():
+    with pytest.raises(TypeError):
+        acf.loads(b'\x00\x01\x02')

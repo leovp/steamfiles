@@ -6,8 +6,7 @@ SECTION_END = '}'
 
 def loads(content):
     if not isinstance(content, str):
-        raise TypeError('the ACF object must be str, not {!r}'.format(
-            content.__class__.__name__))
+        raise TypeError('the ACF object must be str')
 
     data = OrderedDict()
     current_section = data

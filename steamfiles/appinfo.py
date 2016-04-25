@@ -7,6 +7,9 @@ def load(fp):
 
 
 def loads(content):
+    if not isinstance(content, (bytes, bytearray)):
+        raise TypeError('the Appinfo object must be a bytes-like object')
+
     raise NotImplementedError
 
 

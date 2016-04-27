@@ -27,9 +27,9 @@ def dumps(obj):
 class AppinfoDecoder:
 
     def __init__(self, content):
-        self.content = content  # Incoming data (bytes)
-        self.offset = 0         # Parsing offset
-        self.data = {}          # Output (dictionary)
+        self.content = memoryview(content)  # Incoming data (bytes)
+        self.offset = 0                     # Parsing offset
+        self.data = {}                      # Output (dictionary)
 
         # Functions to parse different data structures.
         self.value_parsers = {
@@ -113,10 +113,14 @@ class AppinfoDecoder:
         return byte
 
     def read_string(self):
-        start = self.offset
-        end = self.content.find(b'\0', self.offset)
-        self.offset = end + 1
-        return self.content[start:end]
+        for index, value in enumerate(self.content[self.offset:]):
+            # NUL-byte – a string's end
+            if value != 0:
+                continue
+
+            string = slice(self.offset, self.offset + index)
+            self.offset += index + 1
+            return self.content[string].tobytes()
 
     @staticmethod
     def _unknown_value_type():

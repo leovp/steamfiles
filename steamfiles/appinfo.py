@@ -31,17 +31,23 @@ class AppinfoDecoder:
         self.offset = 0                     # Parsing offset
         self.data = {}                      # Output (dictionary)
 
+        # Commonly used structs
+        self.read_int32 = self.make_custom_reader('<I', single_value=True)
+        self.read_int64 = self.make_custom_reader('<Q', single_value=True)
+        self.read_vdf_header = self.make_custom_reader('<2I')
+        self.read_game_header = self.make_custom_reader('<3IQ20sI')
+
         # Functions to parse different data structures.
         self.value_parsers = {
             0x00: self.parse_subsections,
             0x01: self.read_string,
-            0x02: partial(self.read_struct, 'I'),
-            0x07: partial(self.read_struct, 'Q')
+            0x02: self.read_int32,
+            0x07: self.read_int64,
         }
 
     def decode(self):
         header_fields = ('version', 'universe')
-        header = dict(zip(header_fields, self.read_struct('2I')))
+        header = dict(zip(header_fields, self.read_vdf_header()))
 
         # Currently these are the only possible values for
         # a valid appinfo.vdf
@@ -49,15 +55,15 @@ class AppinfoDecoder:
         assert header['universe'] == VDF_UNIVERSE
 
         # Parsing applications
-        fields = ('size', 'state', 'last_update', 'access_token', 'checksum', 'change_number')
+        app_fields = ('size', 'state', 'last_update', 'access_token', 'checksum', 'change_number')
         while True:
-            app_id = self.read_struct('I')
+            app_id = self.read_int32()
 
             # AppID = 0 marks the last application in the Appinfo
             if not app_id:
                 break
 
-            app = dict(zip(fields, self.read_game_header()))
+            app = dict(zip(app_fields, self.read_game_header()))
             app['sections'] = {}
             while True:
                 section_id = self.read_byte()
@@ -73,10 +79,6 @@ class AppinfoDecoder:
             self.data[app_id] = app
 
         return self.data
-
-    def read_game_header(self):
-        game_header = self.read_struct('<3IQ20sI')
-        return game_header
 
     def parse_subsections(self, root_section=False):
         subsection = {}
@@ -97,15 +99,23 @@ class AppinfoDecoder:
 
         return subsection
 
-    def read_struct(self, fmt):
-        result = struct.unpack_from(fmt, self.content, self.offset)
-        self.offset += struct.calcsize(fmt)
+    def make_custom_reader(self, fmt, single_value=False):
+        custom_struct = struct.Struct(fmt)
 
-        # A hack to return the value itself instead of a tuple of one element.
-        if len(fmt) == 1:
-            return result[0]
-        else:
+        def return_many():
+            result = custom_struct.unpack_from(self.content, self.offset)
+            self.offset += custom_struct.size
             return result
+
+        def return_one():
+            result = custom_struct.unpack_from(self.content, self.offset)
+            self.offset += custom_struct.size
+            return result[0]
+
+        if single_value:
+            return return_one
+        else:
+            return return_many
 
     def read_byte(self):
         byte = self.content[self.offset]

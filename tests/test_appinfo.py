@@ -24,7 +24,7 @@ def pickled_data():
 def test_loads(vdf_data, pickled_data):
     out_file = io.BytesIO()
     parsed = appinfo.loads(vdf_data)
-    pickle.dump(parsed, out_file)
+    pickle.dump(parsed, out_file, protocol=3)
 
     # Rewind to the beginning
     out_file.seek(0)

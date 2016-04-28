@@ -1,5 +1,5 @@
 import struct
-from functools import partial
+from collections import OrderedDict
 
 VDF_VERSION = 0x07564426
 VDF_UNIVERSE = 0x00000001
@@ -29,7 +29,7 @@ class AppinfoDecoder:
     def __init__(self, content):
         self.content = memoryview(content)  # Incoming data (bytes)
         self.offset = 0                     # Parsing offset
-        self.data = {}                      # Output (dictionary)
+        self.data = OrderedDict()           # Output (dictionary)
 
         # Commonly used structs
         self.read_int32 = self.make_custom_reader('<I', single_value=True)
@@ -64,7 +64,7 @@ class AppinfoDecoder:
                 break
 
             app = dict(zip(app_fields, self.read_game_header()))
-            app['sections'] = {}
+            app['sections'] = OrderedDict()
             while True:
                 section_id = self.read_byte()
                 if not section_id:
@@ -81,7 +81,7 @@ class AppinfoDecoder:
         return self.data
 
     def parse_subsections(self, root_section=False):
-        subsection = {}
+        subsection = OrderedDict()
 
         while True:
             value_type = self.read_byte()

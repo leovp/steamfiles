@@ -6,7 +6,7 @@ SECTION_END = '}'
 
 def loads(content):
     if not isinstance(content, str):
-        raise TypeError('the ACF object must be str')
+        raise TypeError('can only load a str as an ACF')
 
     data = OrderedDict()
     current_section = data
@@ -38,6 +38,9 @@ def load(fp):
 
 
 def dumps(obj):
+    if not isinstance(obj, dict):
+        raise TypeError('can only dump a dictionary as an ACF')
+
     return '\n'.join(_dumps(obj, level=0)) + '\n'
 
 

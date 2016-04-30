@@ -1,3 +1,4 @@
+import os
 import setuptools
 
 
@@ -16,7 +17,9 @@ setuptools.setup(
     keywords='steam files parse appinfo vdf acf',
     description='',
     long_description=read('README.md'),
-    datafiles=[('', ['README.md', 'LICENSE'])],
+
+    include_package_data = True,
+    package_data={'': ['README.md', 'LICENSE']},
 
     platforms=['any'],
     packages=setuptools.find_packages(exclude=['tests']),

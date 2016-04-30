@@ -1,0 +1,4 @@
+include LICENCE
+include README.md
+include Makefile
+include tox.ini

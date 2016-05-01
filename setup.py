@@ -1,5 +1,7 @@
 import os
 import setuptools
+from pip.req import parse_requirements
+from pip.download import PipSession
 
 
 def read(fname):
@@ -23,7 +25,16 @@ setuptools.setup(
 
     platforms=['any'],
     packages=setuptools.find_packages(exclude=['tests']),
-    install_requires=[],
+
+    install_requires=[
+        str(req.req) for req in parse_requirements('requirements.txt',
+                                                    session=PipSession())
+    ],
+
+    tests_require=[
+        str(req.req) for req in parse_requirements('requirements_test.txt',
+                                                    session=PipSession())
+    ],
 
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',

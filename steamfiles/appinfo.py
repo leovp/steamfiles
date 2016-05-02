@@ -16,7 +16,7 @@ def loads(content):
     return AppinfoDecoder(content).decode()
 
 
-def dump(fp, obj):
+def dump(obj, fp):
     for chunk in AppinfoEncoder(obj).iter_encode():
         fp.write(chunk)
 

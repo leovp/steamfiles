@@ -24,7 +24,7 @@ def test_load_dump(vdf_data):
     with open(test_file_name, 'rb') as in_file:
         out_file = io.BytesIO()
         obj = appinfo.load(in_file)
-        appinfo.dump(out_file, obj)
+        appinfo.dump(obj, out_file)
 
     # Rewind to the beginning
     out_file.seek(0)

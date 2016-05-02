@@ -44,7 +44,7 @@ def dumps(obj):
     return '\n'.join(_dumps(obj, level=0)) + '\n'
 
 
-def dump(fp, obj):
+def dump(obj, fp):
     fp.write(dumps(obj))
 
 

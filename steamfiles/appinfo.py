@@ -76,6 +76,11 @@ class AppinfoDecoder:
                 section_name = self.read_string()
                 app['sections'][section_name] = self.parse_subsections(root_section=True)
 
+                # New Section ID's could be added in the future, or changes could be made to
+                # existing ones, so instead of maintaining a table of section names and their
+                # corresponding IDs, we are going to store the IDs with all the data.
+                app['sections'][section_name]['_section_id'] = section_id
+
             self.data[app_id] = app
 
         return self.data

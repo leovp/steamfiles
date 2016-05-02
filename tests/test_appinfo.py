@@ -13,12 +13,6 @@ def vdf_data():
         yield f.read()
 
 
-@pytest.yield_fixture
-def pickled_data():
-    with open(reference_file_name, 'rb') as f:
-        yield f.read()
-
-
 @pytest.mark.usefixtures('vdf_data')
 def test_load_dump(vdf_data):
     with open(test_file_name, 'rb') as in_file:

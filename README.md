@@ -6,9 +6,9 @@ and dump() / dumps() for saving the data back to the file.
 ## Format support
 |             | Read  | Write |
 | ----------- | :---: | :---: |
-| ACF         | **+** | **+** |
-| appinfo.vdf | **+** | **-** |
-| Manifest    | **-** | **-** |
+| ACF         | ✅ | ✅ |
+| appinfo.vdf | ✅ | ✅ |
+| Manifest    | ❎ | ❎ |
 
 ## Sample usage
 
@@ -19,3 +19,4 @@ Coming soon…
 steamfiles is distributed under the terms of the MIT license.
 
 See [LICENSE](LICENSE) file for all the details.
+

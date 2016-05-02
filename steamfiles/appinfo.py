@@ -17,7 +17,8 @@ def loads(content):
 
 
 def dump(fp, obj):
-    fp.write(dumps(obj))
+    for chunk in AppinfoEncoder(obj).iter_encode():
+        fp.write(chunk)
 
 
 def dumps(obj):
@@ -140,3 +141,77 @@ class AppinfoDecoder:
     @staticmethod
     def _unknown_value_type():
         raise ValueError("Cannot parse the provided data type.")
+
+
+class AppinfoEncoder:
+
+    def __init__(self, data):
+        self.data = data
+
+    def iter_encode(self):
+        # VDF Header
+        yield struct.pack('<2I', VDF_VERSION, VDF_UNIVERSE)
+
+        for app_id, app_data in self.data.items():
+            # Deleting 'sections' from the dictionary is necessary to pack app_data.values
+            # later, as the struct.pack function doesn't like extra arguments.
+            sections = app_data['sections']
+            del app_data['sections']
+
+            # Game Header
+            yield struct.pack('<I', app_id)
+            yield struct.pack('<3IQ20sI', *app_data.values())
+
+            for section_name, section_data in sections.items():
+                # Delete '_section_id' from the dictionary, as it was placed there by
+                # the decoding class only to preserve the section id number.
+                section_id = section_data['_section_id']
+                del section_data['_section_id']
+
+                # Section name with a NUL-byte at the end.
+                # Example format for 'common': "7s".
+                # The bytes packed with above format: b'common\x00'.
+                name_fmt = str(len(section_name) + 1) + 's'
+                yield struct.pack('<H', section_id)
+                yield struct.pack(name_fmt, section_name)
+                yield from self.iter_encode_section(section_data, root_section=True)
+
+            # SectionID = 0 marks the last section
+            yield struct.pack('B', 0)
+
+        # AppID = 0 marks the last application in the Appinfo
+        yield struct.pack('<I', 0)
+
+    def iter_encode_section(self, section_data, root_section=False):
+        for key, value in section_data.items():
+            # Key with a NUL-byte at the end.
+            # Example format for 'gameid': "7s".
+            # The bytes packed with above format: b'gameid\x00'.
+            key_fmt = str(len(key) + 1) + 's'
+
+            # Encode different types using their corresponding generators.
+            # TODO: wow, what a mess.
+            if isinstance(value, dict):
+                yield struct.pack('B', 0x00)
+                yield struct.pack(key_fmt, key)
+                yield from self.iter_encode_section(value)
+            elif isinstance(value, bytes):
+                yield struct.pack('B', 0x01)
+                yield struct.pack(key_fmt, key)
+                string_fmt = str(len(value) + 1) + 's'
+                yield struct.pack(string_fmt, value)
+            elif isinstance(value, int):
+                if value < 2**31:
+                    yield struct.pack('B', 0x02)
+                    yield struct.pack(key_fmt, key)
+                    yield struct.pack('<I', value)
+                else:
+                    yield struct.pack('B', 0x07)
+                    yield struct.pack(key_fmt, key)
+                    yield struct.pack('<Q', value)
+
+        yield struct.pack('B', 0x08)
+        if root_section:
+            # There's one additional 0x08 byte at the end of
+            # the root subsection.
+            yield struct.pack('B', 0x08)

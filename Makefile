@@ -24,12 +24,12 @@ clean-test:
 	rm -fr htmlcov/
 
 coverage:
-	PYTHONHASHSEED=0 coverage run --branch --source=steamfiles -m pytest
+	coverage run --branch --source=steamfiles -m pytest
 	coverage report -m
 	coverage html
 
 test:
-	PYTHONHASHSEED=0 py.test
+	py.test
 
 #test-all:
 #	tox

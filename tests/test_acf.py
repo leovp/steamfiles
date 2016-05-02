@@ -32,3 +32,8 @@ def test_load_dump(acf_data):
 def test_loads_wrong_type():
     with pytest.raises(TypeError):
         acf.loads(b'\x00\x01\x02')
+
+
+def test_dumps_wrong_type():
+    with pytest.raises(TypeError):
+        acf.dumps([1, 2, 3])

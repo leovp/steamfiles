@@ -47,7 +47,7 @@ class AppinfoDecoder:
 
     def decode(self):
         header_fields = ('version', 'universe')
-        header = dict(zip(header_fields, self.read_vdf_header()))
+        header = OrderedDict(zip(header_fields, self.read_vdf_header()))
 
         # Currently these are the only possible values for
         # a valid appinfo.vdf
@@ -63,7 +63,7 @@ class AppinfoDecoder:
             if not app_id:
                 break
 
-            app = dict(zip(app_fields, self.read_game_header()))
+            app = OrderedDict(zip(app_fields, self.read_game_header()))
             app['sections'] = OrderedDict()
             while True:
                 section_id = self.read_byte()

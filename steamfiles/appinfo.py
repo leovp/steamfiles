@@ -1,3 +1,4 @@
+import copy
 import struct
 from collections import OrderedDict
 
@@ -17,12 +18,11 @@ def loads(content):
 
 
 def dump(obj, fp):
-    for chunk in AppinfoEncoder(obj).iter_encode():
-        fp.write(chunk)
+    fp.write(dumps(obj))
 
 
 def dumps(obj):
-    raise NotImplementedError
+    return b''.join(AppinfoEncoder(obj).iter_encode())
 
 
 class AppinfoDecoder:

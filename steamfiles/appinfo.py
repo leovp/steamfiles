@@ -146,7 +146,9 @@ class AppinfoDecoder:
 class AppinfoEncoder:
 
     def __init__(self, data):
-        self.data = data
+        # We are modifying the dict while iterating / encoding.
+        # TODO: deepcopy vs. not modifying the dictionary at all?
+        self.data = copy.deepcopy(data)
 
     def iter_encode(self):
         # VDF Header

@@ -12,7 +12,7 @@ def load(fp):
 
 def loads(content):
     if not isinstance(content, (bytes, bytearray)):
-        raise TypeError('the Appinfo object must be a bytes-like object')
+        raise TypeError('can only load a bytes-like object as an Appinfo')
 
     return AppinfoDecoder(content).decode()
 

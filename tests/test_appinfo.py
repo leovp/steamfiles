@@ -14,6 +14,11 @@ def vdf_data():
 
 
 @pytest.mark.usefixtures('vdf_data')
+def test_loads_dumps(vdf_data):
+    assert appinfo.dumps(appinfo.loads(vdf_data)) == vdf_data
+
+
+@pytest.mark.usefixtures('vdf_data')
 def test_load_dump(vdf_data):
     with open(test_file_name, 'rb') as in_file:
         out_file = io.BytesIO()

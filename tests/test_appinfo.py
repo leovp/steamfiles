@@ -33,3 +33,8 @@ def test_load_dump(vdf_data):
 def test_loads_wrong_type():
     with pytest.raises(TypeError):
         appinfo.loads('JustTestData')
+
+
+def test_dumps_wrong_type():
+    with pytest.raises(TypeError):
+        appinfo.dumps([1, 2, 3])

@@ -5,6 +5,15 @@ from collections import OrderedDict
 VDF_VERSION = 0x07564426
 VDF_UNIVERSE = 0x00000001
 
+LAST_SECTION = b'\x00'
+LAST_APP = b'\x00\x00\x00\x00'
+SECTION_END = b'\x08'
+
+TYPE_SECTION = b'\x00'
+TYPE_STRING = b'\x01'
+TYPE_INT32 = b'\x02'
+TYPE_INT64 = b'\x07'
+
 
 def load(fp):
     return loads(fp.read())
@@ -177,39 +186,37 @@ class AppinfoEncoder:
                 yield self.encode_string(section_name)
                 yield from self.iter_encode_section(section_data, root_section=True)
 
-            # SectionID = 0 marks the last section
-            yield b'\x00'
+            yield LAST_SECTION
 
-        # AppID = 0 marks the last application in the Appinfo
-        yield b'\x00\x00\x00\x00'
+        yield LAST_APP
 
     def iter_encode_section(self, section_data, root_section=False):
         for key, value in section_data.items():
             # Encode different types using their corresponding generators.
             # TODO: wow, what a mess.
             if isinstance(value, dict):
-                yield b'\x00'
+                yield TYPE_SECTION
                 yield self.encode_string(key)
                 yield from self.iter_encode_section(value)
             elif isinstance(value, bytes):
-                yield b'\x01'
+                yield TYPE_STRING
                 yield self.encode_string(key)
                 yield self.encode_string(value)
             elif isinstance(value, int):
                 if value < 2**31:
-                    yield b'\x02'
+                    yield TYPE_INT32
                     yield self.encode_string(key)
                     yield struct.pack('<I', value)
                 else:
-                    yield b'\x07'
+                    yield TYPE_INT64
                     yield self.encode_string(key)
                     yield struct.pack('<Q', value)
 
-        yield b'\x08'
+        yield SECTION_END
         if root_section:
             # There's one additional 0x08 byte at the end of
             # the root subsection.
-            yield b'\x08'
+            yield SECTION_END
 
     @staticmethod
     def encode_string(string):

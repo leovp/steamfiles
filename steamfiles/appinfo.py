@@ -174,7 +174,7 @@ class AppinfoEncoder:
                 del section_data['_section_id']
 
                 yield struct.pack('<H', section_id)
-                yield from self.encode_string(section_name)
+                yield self.encode_string(section_name)
                 yield from self.iter_encode_section(section_data, root_section=True)
 
             # SectionID = 0 marks the last section
@@ -189,20 +189,20 @@ class AppinfoEncoder:
             # TODO: wow, what a mess.
             if isinstance(value, dict):
                 yield struct.pack('B', 0x00)
-                yield from self.encode_string(key)
+                yield self.encode_string(key)
                 yield from self.iter_encode_section(value)
             elif isinstance(value, bytes):
                 yield struct.pack('B', 0x01)
-                yield from self.encode_string(key)
-                yield from self.encode_string(value)
+                yield self.encode_string(key)
+                yield self.encode_string(value)
             elif isinstance(value, int):
                 if value < 2**31:
                     yield struct.pack('B', 0x02)
-                    yield from self.encode_string(key)
+                    yield self.encode_string(key)
                     yield struct.pack('<I', value)
                 else:
                     yield struct.pack('B', 0x07)
-                    yield from self.encode_string(key)
+                    yield self.encode_string(key)
                     yield struct.pack('<Q', value)
 
         yield b'\x08'
@@ -217,4 +217,4 @@ class AppinfoEncoder:
         # Example format for 'gameid': "7s".
         # The bytes packed with above format: b'gameid\x00'.
         fmt = str(len(string) + 1) + 's'
-        yield struct.pack(fmt, string)
+        return struct.pack(fmt, string)

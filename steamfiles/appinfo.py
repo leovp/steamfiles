@@ -205,11 +205,11 @@ class AppinfoEncoder:
                     yield from self.encode_string(key)
                     yield struct.pack('<Q', value)
 
-        yield struct.pack('B', 0x08)
+        yield b'\x08'
         if root_section:
             # There's one additional 0x08 byte at the end of
             # the root subsection.
-            yield struct.pack('B', 0x08)
+            yield b'\x08'
 
     @staticmethod
     def encode_string(string):

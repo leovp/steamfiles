@@ -158,25 +158,20 @@ class AppinfoDecoder:
 class AppinfoEncoder:
 
     def __init__(self, data):
-        # We are modifying the dict while iterating / encoding.
-        # TODO: deepcopy vs. not modifying the dictionary at all?
-        self.data = copy.deepcopy(data)
+        self.data = data
 
     def iter_encode(self):
         # VDF Header
         yield struct.pack('<2I', VDF_VERSION, VDF_UNIVERSE)
 
         for app_id, app_data in self.data.items():
-            # Deleting 'sections' from the dictionary is necessary to pack app_data.values
-            # later, as the struct.pack function doesn't like extra arguments.
-            sections = app_data['sections']
-            del app_data['sections']
-
             # Game Header
             yield struct.pack('<I', app_id)
-            yield struct.pack('<3IQ20sI', *app_data.values())
+            yield struct.pack('<3IQ20sI', app_data['size'], app_data['state'],
+                                          app_data['last_update'], app_data['access_token'],
+                                          app_data['checksum'], app_data['change_number'])
 
-            for section_name, section_data in sections.items():
+            for section_name, section_data in app_data['sections'].items():
                 # Delete '_section_id' from the dictionary, as it was placed there by
                 # the decoding class only to preserve the section id number.
                 section_id = section_data['__steamfiles_section_id']

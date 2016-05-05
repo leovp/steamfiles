@@ -178,10 +178,10 @@ class AppinfoEncoder:
                 yield from self.iter_encode_section(section_data, root_section=True)
 
             # SectionID = 0 marks the last section
-            yield struct.pack('B', 0)
+            yield b'\x00'
 
         # AppID = 0 marks the last application in the Appinfo
-        yield struct.pack('<I', 0)
+        yield b'\x00\x00\x00\x00'
 
     def iter_encode_section(self, section_data, root_section=False):
         for key, value in section_data.items():

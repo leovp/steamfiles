@@ -1,6 +1,6 @@
 import copy
 import struct
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 VDF_VERSION = 0x07564426
 VDF_UNIVERSE = 0x00000001
@@ -13,6 +13,9 @@ TYPE_SECTION = b'\x00'
 TYPE_STRING = b'\x01'
 TYPE_INT32 = b'\x02'
 TYPE_INT64 = b'\x07'
+
+# VDF has variable length integers (32-bit and 64-bit).
+Integer = namedtuple('Integer', ('size', 'data'))
 
 
 def load(fp):
@@ -45,8 +48,8 @@ class AppinfoDecoder:
         self.data = OrderedDict()           # Output (dictionary)
 
         # Commonly used structs
-        self.read_int32 = self.make_custom_reader('<I', single_value=True)
-        self.read_int64 = self.make_custom_reader('<Q', single_value=True)
+        self._read_int32 = self.make_custom_reader('<I', single_value=True)
+        self._read_int64 = self.make_custom_reader('<Q', single_value=True)
         self.read_vdf_header = self.make_custom_reader('<2I')
         self.read_game_header = self.make_custom_reader('<3IQ20sI')
 
@@ -70,7 +73,7 @@ class AppinfoDecoder:
         # Parsing applications
         app_fields = ('size', 'state', 'last_update', 'access_token', 'checksum', 'change_number')
         while True:
-            app_id = self.read_int32()
+            app_id = self._read_int32()
 
             # AppID = 0 marks the last application in the Appinfo
             if not app_id:
@@ -134,6 +137,14 @@ class AppinfoDecoder:
             return return_one
         else:
             return return_many
+
+    def read_int32(self):
+        number = self._read_int32()
+        return Integer(data=number, size=32)
+
+    def read_int64(self):
+        number = self._read_int64()
+        return Integer(data=number, size=64)
 
     def read_byte(self):
         byte = self.content[self.offset]
@@ -199,15 +210,17 @@ class AppinfoEncoder:
                 yield TYPE_STRING
                 yield self.encode_string(key)
                 yield self.encode_string(value)
-            elif isinstance(value, int):
-                if value < 2**31:
+            elif isinstance(value, Integer):
+                if value.size == 32:
                     yield TYPE_INT32
                     yield self.encode_string(key)
-                    yield struct.pack('<I', value)
-                else:
+                    yield struct.pack('<I', value.data)
+                elif value.size == 64:
                     yield TYPE_INT64
                     yield self.encode_string(key)
-                    yield struct.pack('<Q', value)
+                    yield struct.pack('<Q', value.data)
+                else:
+                    raise TypeError('Unknown type of an Integer')
 
         yield SECTION_END
         if root_section:

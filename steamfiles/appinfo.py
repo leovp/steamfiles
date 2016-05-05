@@ -188,20 +188,20 @@ class AppinfoEncoder:
             # Encode different types using their corresponding generators.
             # TODO: wow, what a mess.
             if isinstance(value, dict):
-                yield struct.pack('B', 0x00)
+                yield b'\x00'
                 yield self.encode_string(key)
                 yield from self.iter_encode_section(value)
             elif isinstance(value, bytes):
-                yield struct.pack('B', 0x01)
+                yield b'\x01'
                 yield self.encode_string(key)
                 yield self.encode_string(value)
             elif isinstance(value, int):
                 if value < 2**31:
-                    yield struct.pack('B', 0x02)
+                    yield b'\x02'
                     yield self.encode_string(key)
                     yield struct.pack('<I', value)
                 else:
-                    yield struct.pack('B', 0x07)
+                    yield b'\x07'
                     yield self.encode_string(key)
                     yield struct.pack('<Q', value)
 

@@ -1,4 +1,3 @@
-import copy
 import struct
 from collections import OrderedDict, namedtuple
 
@@ -179,8 +178,8 @@ class AppinfoEncoder:
             # Game Header
             yield struct.pack('<I', app_id)
             yield struct.pack('<3IQ20sI', app_data['size'], app_data['state'],
-                                          app_data['last_update'], app_data['access_token'],
-                                          app_data['checksum'], app_data['change_number'])
+                              app_data['last_update'], app_data['access_token'],
+                              app_data['checksum'], app_data['change_number'])
 
             for section_name, section_data in app_data['sections'].items():
                 # Delete '_section_id' from the dictionary, as it was placed there by

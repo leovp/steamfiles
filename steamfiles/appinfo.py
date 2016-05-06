@@ -211,22 +211,25 @@ class AppinfoEncoder:
                 yield self.encode_string(key)
                 yield self.encode_string(value)
             elif isinstance(value, Integer):
-                if value.size == 32:
-                    yield TYPE_INT32
-                    yield self.encode_string(key)
-                    yield struct.pack('<I', value.data)
-                elif value.size == 64:
-                    yield TYPE_INT64
-                    yield self.encode_string(key)
-                    yield struct.pack('<Q', value.data)
-                else:
-                    raise TypeError('Unknown type of an Integer')
+                yield from self.encode_integer(key, value)
 
         yield SECTION_END
         if root_section:
             # There's one additional 0x08 byte at the end of
             # the root subsection.
             yield SECTION_END
+
+    def encode_integer(self, key, value):
+        if value.size == 32:
+            yield TYPE_INT32
+            yield self.encode_string(key)
+            yield struct.pack('<I', value.data)
+        elif value.size == 64:
+            yield TYPE_INT64
+            yield self.encode_string(key)
+            yield struct.pack('<Q', value.data)
+        else:
+            raise TypeError('Unknown type of an Integer')
 
     @staticmethod
     def encode_string(string):

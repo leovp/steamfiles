@@ -200,7 +200,6 @@ class AppinfoEncoder:
                 continue
 
             # Encode different types using their corresponding generators.
-            # TODO: wow, what a mess.
             if isinstance(value, dict):
                 yield TYPE_SECTION
                 yield self.encode_string(key)

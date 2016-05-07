@@ -4,22 +4,22 @@ SECTION_START = '{'
 SECTION_END = '}'
 
 
-def loads(content):
-    if not isinstance(content, str):
+def loads(data):
+    if not isinstance(data, str):
         raise TypeError('can only load a str as an ACF')
 
-    data = OrderedDict()
-    current_section = data
+    parsed = OrderedDict()
+    current_section = parsed
     sections = []
 
-    lines = (line.replace('"', '').strip() for line in content.splitlines())
+    lines = (line.replace('"', '').strip() for line in data.splitlines())
     for line in lines:
         try:
             key, value = line.split(None, 1)
         except ValueError:
             if line == SECTION_START:
                 # Initialize the last added section.
-                current_section = _prepare_subsection(data, sections)
+                current_section = _prepare_subsection(parsed, sections)
             elif line == SECTION_END:
                 # Remove the last section from the queue.
                 sections.pop()
@@ -30,7 +30,7 @@ def loads(content):
 
         current_section[key] = value
 
-    return data
+    return parsed
 
 
 def load(fp):

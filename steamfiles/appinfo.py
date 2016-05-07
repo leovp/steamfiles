@@ -21,11 +21,11 @@ def load(fp):
     return loads(fp.read())
 
 
-def loads(content):
-    if not isinstance(content, (bytes, bytearray)):
+def loads(data):
+    if not isinstance(data, (bytes, bytearray)):
         raise TypeError('can only load a bytes-like object as an Appinfo')
 
-    return AppinfoDecoder(content).decode()
+    return AppinfoDecoder(data).decode()
 
 
 def dump(obj, fp):
@@ -41,10 +41,9 @@ def dumps(obj):
 
 class AppinfoDecoder:
 
-    def __init__(self, content):
-        self.content = memoryview(content)  # Incoming data (bytes)
-        self.offset = 0                     # Parsing offset
-        self.data = OrderedDict()           # Output (dictionary)
+    def __init__(self, data):
+        self.data = memoryview(data)  # Incoming data (bytes)
+        self.offset = 0               # Parsing offset
 
         # Commonly used structs
         self._read_int32 = self.make_custom_reader('<I', single_value=True)
@@ -61,6 +60,8 @@ class AppinfoDecoder:
         }
 
     def decode(self):
+        parsed = OrderedDict()
+
         header_fields = ('version', 'universe')
         header = OrderedDict(zip(header_fields, self.read_vdf_header()))
 
@@ -96,9 +97,9 @@ class AppinfoDecoder:
                 # corresponding IDs, we are going to store the IDs with all the data.
                 app['sections'][section_name]['__steamfiles_section_id'] = section_id
 
-            self.data[app_id] = app
+            parsed[app_id] = app
 
-        return self.data
+        return parsed
 
     def parse_subsections(self, root_section=False):
         subsection = OrderedDict()
@@ -123,12 +124,12 @@ class AppinfoDecoder:
         custom_struct = struct.Struct(fmt)
 
         def return_many():
-            result = custom_struct.unpack_from(self.content, self.offset)
+            result = custom_struct.unpack_from(self.data, self.offset)
             self.offset += custom_struct.size
             return result
 
         def return_one():
-            result = custom_struct.unpack_from(self.content, self.offset)
+            result = custom_struct.unpack_from(self.data, self.offset)
             self.offset += custom_struct.size
             return result[0]
 
@@ -146,19 +147,19 @@ class AppinfoDecoder:
         return Integer(data=number, size=64)
 
     def read_byte(self):
-        byte = self.content[self.offset]
+        byte = self.data[self.offset]
         self.offset += 1
         return byte
 
     def read_string(self):
-        for index, value in enumerate(self.content[self.offset:]):
+        for index, value in enumerate(self.data[self.offset:]):
             # NUL-byte – a string's end
             if value != 0:
                 continue
 
             string = slice(self.offset, self.offset + index)
             self.offset += index + 1
-            return self.content[string].tobytes()
+            return self.data[string].tobytes()
 
     @staticmethod
     def _unknown_value_type():

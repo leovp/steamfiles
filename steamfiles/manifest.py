@@ -1,6 +1,8 @@
 import struct
 from protobuf_to_dict import protobuf_to_dict, dict_to_protobuf
 
+__all__ = ('load', 'loads', 'dump', 'dumps')
+
 try:
     from .manifest_pb2 import Payload, Metadata, Signature
 except ImportError:

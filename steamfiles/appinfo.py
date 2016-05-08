@@ -1,6 +1,8 @@
 import struct
 from collections import OrderedDict, namedtuple
 
+__all__ = ('load', 'loads', 'dump', 'dumps')
+
 VDF_VERSION = 0x07564426
 VDF_UNIVERSE = 0x00000001
 

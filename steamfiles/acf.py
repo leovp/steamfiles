@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+__all__ = ('load', 'loads', 'dump', 'dumps')
+
 SECTION_START = '{'
 SECTION_END = '}'
 

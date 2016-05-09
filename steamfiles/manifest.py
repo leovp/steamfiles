@@ -55,7 +55,7 @@ def loads(data):
 
         parsed[MSG_NAMES[msg_id]] = protobuf_to_dict(message)
 
-    return parsed['metadata']
+    return parsed
 
 
 def dump(obj, fp):

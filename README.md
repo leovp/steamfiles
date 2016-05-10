@@ -8,7 +8,7 @@ and ```dump()``` / ```dumps()``` for saving the data back to the file.
 | ----------- | :---: | :---: |
 | ACF         | ✅ | ✅ |
 | appinfo.vdf | ✅ | ✅ |
-| Manifest    | ❎ | ❎ |
+| Manifest    | ✅ | ✅ |
 
 ## Quickstart
 

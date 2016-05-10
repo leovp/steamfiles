@@ -38,7 +38,6 @@ def load(fp):
 
 
 def loads(data):
-    data = memoryview(data)
     offset = 0
     parsed = {}
     int32 = struct.Struct('<I')

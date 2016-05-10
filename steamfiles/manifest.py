@@ -20,6 +20,12 @@ MSG_NAMES = {
     MSG_SIGNATURE: 'signature',
 }
 
+MSG_IDS = {
+    'payload': MSG_PAYLOAD,
+    'metadata': MSG_METADATA,
+    'signature': MSG_SIGNATURE,
+}
+
 MessageClass = {
     MSG_PAYLOAD: Payload,
     MSG_METADATA: Metadata,
@@ -63,4 +69,21 @@ def dump(obj, fp):
 
 
 def dumps(obj):
-    raise NotImplementedError
+    data = []
+    int32 = struct.Struct('<I')
+
+    for message_name in ('payload', 'metadata', 'signature'):
+        message_data = obj[message_name]
+        message_id = MSG_IDS[message_name]
+        message_class = MessageClass[message_id]
+        message = dict_to_protobuf(message_class, message_data)
+        message_bytes = message.SerializeToString()
+        message_size = len(message_bytes)
+
+        data.append(int32.pack(message_id))
+        data.append(int32.pack(message_size))
+        data.append(message_bytes)
+
+    # MSG_EOF marks the end of messages.
+    data.append(int32.pack(MSG_EOF))
+    return b''.join(data)

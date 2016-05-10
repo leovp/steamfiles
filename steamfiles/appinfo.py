@@ -213,6 +213,8 @@ class AppinfoEncoder:
                 yield self.encode_string(value)
             elif isinstance(value, Integer):
                 yield from self.encode_integer(key, value)
+            else:
+                raise TypeError('Unknown value type')
 
         yield SECTION_END
         if root_section:

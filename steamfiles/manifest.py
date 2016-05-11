@@ -38,6 +38,9 @@ def load(fp):
 
 
 def loads(data):
+    if not isinstance(data, (bytes, bytearray)):
+        raise TypeError('can only load a bytes-like object as a Manifest')
+
     offset = 0
     parsed = {}
     int32 = struct.Struct('<I')
@@ -68,6 +71,9 @@ def dump(obj, fp):
 
 
 def dumps(obj):
+    if not isinstance(obj, dict):
+        raise TypeError('can only dump a dictionary as a Manifest')
+
     data = []
     int32 = struct.Struct('<I')
 

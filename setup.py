@@ -16,7 +16,7 @@ setuptools.setup(
     author='Leonid Runyshkin',
     author_email='runyshkin@gmail.com',
 
-    keywords='steam files parse appinfo vdf acf',
+    keywords='steam files parse appinfo vdf acf manifest',
     description='',
     long_description=read('README.md'),
 

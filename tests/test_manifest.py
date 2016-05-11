@@ -27,3 +27,13 @@ def test_load_dump(manifest_data):
     # Rewind to the beginning
     out_file.seek(0)
     assert out_file.read() == manifest_data
+
+
+def test_loads_wrong_type():
+    with pytest.raises(TypeError):
+        manifest.loads('JustTestData')
+
+
+def test_dumps_wrong_type():
+    with pytest.raises(TypeError):
+        manifest.dumps([1, 2, 3])

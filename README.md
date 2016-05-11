@@ -1,4 +1,5 @@
 # steamfiles
+[![Build Status](https://travis-ci.org/leovp/steamfiles.svg?branch=master)](https://travis-ci.org/leovp/steamfiles)  
 Python library for parsing the most common Steam file formats.  
 The library has a familiar JSON-like interface: ```load()``` / ```loads()``` for loading the data,  
 and ```dump()``` / ```dumps()``` for saving the data back to the file.

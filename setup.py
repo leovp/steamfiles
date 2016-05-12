@@ -19,10 +19,10 @@ setuptools.setup(
 
     keywords='steam files valve format parse appinfo vdf acf manifest',
     description='Python library for parsing the most common Steam file formats.',
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
 
     include_package_data=True,
-    package_data={'': ['README.md', 'LICENSE']},
+    package_data={'': ['README.rst', 'LICENSE']},
 
     platforms=['any'],
     packages=setuptools.find_packages(exclude=['tests']),

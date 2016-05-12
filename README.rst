@@ -1,7 +1,14 @@
 steamfiles
 ==========
 
-| |Build Status|
+.. image:: https://badge.fury.io/py/steamfiles.svg
+    :target: http://badge.fury.io/py/steamfiles
+    :alt: Latest version
+
+.. image:: https://travis-ci.org/leovp/steamfiles.svg?branch=master
+    :target: https://travis-ci.org/leovp/steamfiles
+    :alt: Travis-CI
+
 | Python library for parsing the most common Steam file formats.
 | The library has a familiar JSON-like interface: ``load()`` / ``loads()`` for loading the data,
 | and ``dump()`` / ``dumps()`` for saving the data back to the file.
@@ -22,7 +29,7 @@ Format support
 Quickstart
 ----------
 
-``steamfiles`` requires Python 3.3+
+`steamfiles` requires Python 3.3+
 
 Install the latest stable version:
 
@@ -32,6 +39,7 @@ Install the latest stable version:
 
 Import a module for your desired format:
 ::
+
     # Use one of these, or all at once!
     from steamfiles import acf
     from steamfiles import appinfo
@@ -39,6 +47,7 @@ Import a module for your desired format:
 
 Easily load data, modify it and dump back:
 ::
+
     with open('appinfo.vdf', 'rb') as f:
         data = appinfo.load(f)
         
@@ -56,9 +65,7 @@ Easily load data, modify it and dump back:
 License
 -------
 
-``steamfiles`` is distributed under the terms of the MIT license.
+`steamfiles` is distributed under the terms of the MIT license.
 
-See `LICENSE <LICENSE>`__ file for all the details.
+See the bundled `LICENSE <https://github.com/leovp/steamfiles/blob/master/LICENSE>`_ file for more details.
 
-.. |Build Status| image:: https://travis-ci.org/leovp/steamfiles.svg?branch=master
-   :target: https://travis-ci.org/leovp/steamfiles

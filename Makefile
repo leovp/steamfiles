@@ -31,5 +31,5 @@ coverage:
 test:
 	py.test
 
-#test-all:
-#	tox
+test-all:
+	tox

@@ -7,20 +7,21 @@ from pip.download import PipSession
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 setuptools.setup(
     name='steamfiles',
-    version='0.0.1',
+    version='0.1.0',
     url='https://github.com/leovp/steamfiles',
     license='MIT',
 
     author='Leonid Runyshkin',
     author_email='runyshkin@gmail.com',
 
-    keywords='steam files parse appinfo vdf acf manifest',
-    description='',
+    keywords='steam files valve format parse appinfo vdf acf manifest',
+    description='Python library for parsing the most common Steam file formats.',
     long_description=read('README.md'),
 
-    include_package_data = True,
+    include_package_data=True,
     package_data={'': ['README.md', 'LICENSE']},
 
     platforms=['any'],
@@ -28,16 +29,16 @@ setuptools.setup(
 
     install_requires=[
         str(req.req) for req in parse_requirements('requirements.txt',
-                                                    session=PipSession())
-    ],
+                                                   session=PipSession())
+        ],
 
     tests_require=[
         str(req.req) for req in parse_requirements('requirements_test.txt',
-                                                    session=PipSession())
-    ],
+                                                   session=PipSession())
+        ],
 
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

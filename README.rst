@@ -62,6 +62,13 @@ Easily load data, modify it and dump back:
     with open('new_appinfo.vdf', 'wb') as f:
         appinfo.dump(data, f)
 
+Documentation
+------------
+
+`ACF format overview <https://github.com/leovp/steamfiles/blob/master/docs/acf_overview.rst>`_
+
+More in progress…
+
 License
 -------
 

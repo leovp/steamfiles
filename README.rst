@@ -63,7 +63,7 @@ Easily load data, modify it and dump back:
         appinfo.dump(data, f)
 
 Documentation
-------------
+-------------
 
 `ACF format overview <https://github.com/leovp/steamfiles/blob/master/docs/acf_overview.rst>`_
 

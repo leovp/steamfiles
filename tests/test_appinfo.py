@@ -1,6 +1,5 @@
 import io
 import os
-import pickle
 import pytest
 from steamfiles import appinfo
 

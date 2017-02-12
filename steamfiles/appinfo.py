@@ -84,8 +84,10 @@ class AppinfoDecoder:
     def decode(self):
         parsed = OrderedDict()
 
+        # These should always be present.
         header_fields = ('version', 'universe')
         header = OrderedDict(zip(header_fields, self.read_vdf_header()))
+        assert len(header) == len(header_fields)
 
         # Currently these are the only possible values for
         # a valid appinfo.vdf
@@ -101,7 +103,10 @@ class AppinfoDecoder:
             if not app_id:
                 break
 
+            # All fields are required.
             app = OrderedDict(zip(app_fields, self.read_game_header()))
+            assert len(app) == len(app_fields)
+
             app['sections'] = OrderedDict()
             while True:
                 section_id = self.read_byte()

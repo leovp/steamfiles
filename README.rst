@@ -69,6 +69,16 @@ Documentation
 
 More in progress…
 
+TODO
+----
+
+- [✓] ACF support
+- [✓] appinfo.vdf support (Binary VDF)
+- [✓] Manifest support
+- [?] packageinfo.vdf (Another binary VDF)
+- [?] UserGameStats (achievements)
+- [?] Text VDF files (are they actually ACF?)
+
 License
 -------
 

@@ -34,10 +34,20 @@ MessageClass = {
 
 
 def load(fp):
+    """
+    Loads the contents of a Manifest file into a Python object.
+    :param fp: A file object.
+    :return: A dictionary with Manifest data.
+    """
     return loads(fp.read())
 
 
 def loads(data):
+    """
+    Loads Manifest content into a Python object.
+    :param data: A byte-like object with the contents of an Appinfo file.
+    :return: A dictionary with Manifest data.
+    """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError('can only load a bytes-like object as a Manifest')
 
@@ -67,10 +77,20 @@ def loads(data):
 
 
 def dump(obj, fp):
+    """
+    Serializes a dictionary into Manifest data and writes it to a file.
+    :param obj: A dictionary to serialize.
+    :param fp: A file object.
+    """
     fp.write(dumps(obj))
 
 
 def dumps(obj):
+    """
+    Serializes a dictionary into Manifest data.
+    :param obj: A dictionary to serialize.
+    :return: A file object.
+    """
     if not isinstance(obj, dict):
         raise TypeError('can only dump a dictionary as a Manifest')
 

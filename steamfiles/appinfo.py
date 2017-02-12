@@ -20,10 +20,20 @@ Integer = namedtuple('Integer', ('size', 'data'))
 
 
 def load(fp):
+    """
+    Loads the contents of an Appinfo file into a Python object.
+    :param fp: A file object.
+    :return: An Ordered Dictionary with Appinfo data.
+    """
     return loads(fp.read())
 
 
 def loads(data):
+    """
+    Loads Appinfo content into a Python object.
+    :param data: A byte-like object with the contents of an Appinfo file.
+    :return: An Ordered Dictionary with Appinfo data.
+    """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError('can only load a bytes-like object as an Appinfo')
 
@@ -31,10 +41,20 @@ def loads(data):
 
 
 def dump(obj, fp):
+    """
+    Serializes a dictionary into Appinfo data and writes it to a file.
+    :param obj: A dictionary to serialize.
+    :param fp: A file object.
+    """
     fp.write(dumps(obj))
 
 
 def dumps(obj):
+    """
+    Serializes a dictionary into Appinfo data.
+    :param obj: A dictionary to serialize.
+    :return:
+    """
     if not isinstance(obj, dict):
         raise TypeError('can only dump a dictionary as an Appinfo')
 

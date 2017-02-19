@@ -13,6 +13,12 @@ def acf_data():
 
 
 @pytest.mark.usefixtures('acf_data')
+def test_acf_keys_exist(acf_data):
+    data = acf.loads(acf_data)
+    assert 'BytesDownloaded' in data['AppState']['DlcDownloads']['202988']
+    assert 'BytesToDownload' in data['AppState']['DlcDownloads']['202988']
+
+@pytest.mark.usefixtures('acf_data')
 def test_loads_dumps(acf_data):
     assert acf.dumps(acf.loads(acf_data)) == acf_data
 

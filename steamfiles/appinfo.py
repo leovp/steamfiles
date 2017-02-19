@@ -1,5 +1,5 @@
 import struct
-from collections import OrderedDict, namedtuple
+from collections import namedtuple
 
 __all__ = ('load', 'loads', 'dump', 'dumps')
 
@@ -19,25 +19,27 @@ TYPE_INT64 = b'\x07'
 Integer = namedtuple('Integer', ('size', 'data'))
 
 
-def load(fp):
+def load(fp, wrapper=dict):
     """
     Loads the contents of an Appinfo file into a Python object.
     :param fp: A file object.
+    :param wrapper: A wrapping object for key-value pairs.
     :return: An Ordered Dictionary with Appinfo data.
     """
-    return loads(fp.read())
+    return loads(fp.read(), wrapper=wrapper)
 
 
-def loads(data):
+def loads(data, wrapper=dict):
     """
     Loads Appinfo content into a Python object.
     :param data: A byte-like object with the contents of an Appinfo file.
+    :param wrapper: A wrapping object for key-value pairs.
     :return: An Ordered Dictionary with Appinfo data.
     """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError('can only load a bytes-like object as an Appinfo')
 
-    return AppinfoDecoder(data).decode()
+    return AppinfoDecoder(data, wrapper=wrapper).decode()
 
 
 def dump(obj, fp):
@@ -63,7 +65,8 @@ def dumps(obj):
 
 class AppinfoDecoder:
 
-    def __init__(self, data):
+    def __init__(self, data, wrapper=dict):
+        self.wrapper = wrapper        # Wrapping container
         self.data = memoryview(data)  # Incoming data (bytes)
         self.offset = 0               # Parsing offset
 
@@ -82,11 +85,11 @@ class AppinfoDecoder:
         }
 
     def decode(self):
-        parsed = OrderedDict()
+        parsed = self.wrapper()
 
         # These should always be present.
         header_fields = ('version', 'universe')
-        header = OrderedDict(zip(header_fields, self.read_vdf_header()))
+        header = self.wrapper((zip(header_fields, self.read_vdf_header())))
         assert len(header) == len(header_fields)
 
         # Currently these are the only possible values for
@@ -104,10 +107,10 @@ class AppinfoDecoder:
                 break
 
             # All fields are required.
-            app = OrderedDict(zip(app_fields, self.read_game_header()))
+            app = self.wrapper((zip(app_fields, self.read_game_header())))
             assert len(app) == len(app_fields)
 
-            app['sections'] = OrderedDict()
+            app['sections'] = self.wrapper()
             while True:
                 section_id = self.read_byte()
                 if not section_id:
@@ -129,7 +132,7 @@ class AppinfoDecoder:
         return parsed
 
     def parse_subsections(self, root_section=False):
-        subsection = OrderedDict()
+        subsection = self.wrapper()
 
         while True:
             value_type = self.read_byte()

@@ -125,7 +125,7 @@ class AppinfoDecoder:
                 # New Section ID's could be added in the future, or changes could be made to
                 # existing ones, so instead of maintaining a table of section names and their
                 # corresponding IDs, we are going to store the IDs with all the data.
-                app['sections'][section_name]['__steamfiles_section_id'] = section_id
+                app['sections'][section_name][b'__steamfiles_section_id'] = section_id
 
             parsed[app_id] = app
 
@@ -217,7 +217,7 @@ class AppinfoEncoder:
             for section_name, section_data in app_data['sections'].items():
                 # Delete '_section_id' from the dictionary, as it was placed there by
                 # the decoding class only to preserve the section id number.
-                section_id = section_data['__steamfiles_section_id']
+                section_id = section_data[b'__steamfiles_section_id']
 
                 yield struct.pack('<H', section_id)
                 yield self.encode_string(section_name)
@@ -229,7 +229,7 @@ class AppinfoEncoder:
 
     def iter_encode_section(self, section_data, root_section=False):
         for key, value in section_data.items():
-            if key == '__steamfiles_section_id':
+            if key == b'__steamfiles_section_id':
                 continue
 
             # Encode different types using their corresponding generators.

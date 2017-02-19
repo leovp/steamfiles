@@ -10,7 +10,7 @@ def read(fname):
 
 setuptools.setup(
     name='steamfiles',
-    version='0.1.1',
+    version='0.1.2',
     url='https://github.com/leovp/steamfiles',
     license='MIT',
 
@@ -50,5 +50,6 @@ setuptools.setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Lauguage :: Python :: 3.6',
     ],
 )

@@ -33,26 +33,28 @@ MessageClass = {
 }
 
 
-def load(fp):
+def load(fp, wrapper=dict):
     """
     Loads the contents of a Manifest file into a Python object.
     :param fp: A file object.
+    :param wrapper: A wrapping object for key-value pairs.
     :return: A dictionary with Manifest data.
     """
-    return loads(fp.read())
+    return loads(fp.read(), wrapper=wrapper)
 
 
-def loads(data):
+def loads(data, wrapper=dict):
     """
     Loads Manifest content into a Python object.
     :param data: A byte-like object with the contents of an Appinfo file.
+    :param wrapper: A wrapping object for key-value pairs.
     :return: A dictionary with Manifest data.
     """
     if not isinstance(data, (bytes, bytearray)):
         raise TypeError('can only load a bytes-like object as a Manifest')
 
     offset = 0
-    parsed = {}
+    parsed = wrapper()
     int32 = struct.Struct('<I')
 
     while True:
@@ -71,7 +73,7 @@ def loads(data):
         message = MessageClass[msg_id]()
         message.ParseFromString(msg_data)
 
-        parsed[MSG_NAMES[msg_id]] = protobuf_to_dict(message)
+        parsed[MSG_NAMES[msg_id]] = wrapper(protobuf_to_dict(message))
 
     return parsed
 

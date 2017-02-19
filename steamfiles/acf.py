@@ -19,10 +19,13 @@ def loads(data):
     current_section = parsed
     sections = []
 
-    lines = (line.replace('"', '').strip() for line in data.splitlines())
+    lines = (line.strip() for line in data.splitlines())
+
     for line in lines:
         try:
             key, value = line.split(None, 1)
+            key = key.replace('"', '').lstrip()
+            value = value.replace('"', '').rstrip()
         except ValueError:
             if line == SECTION_START:
                 # Initialize the last added section.
@@ -32,7 +35,7 @@ def loads(data):
                 sections.pop()
             else:
                 # Add a new section to the queue.
-                sections.append(line)
+                sections.append(line.replace('"', ''))
             continue
 
         current_section[key] = value

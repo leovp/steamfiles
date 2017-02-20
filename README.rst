@@ -66,6 +66,14 @@ Easily load data, modify it and dump back:
     with open('new_appinfo.vdf', 'wb') as f:
         appinfo.dump(data, f)
 
+Caution: all formats are parsed into `dict` by default, so the order of data is very likely not the same.
+As I'm not sure how Steam and related tools deal with rearranged data, pass an `OrderedDict` class to the `wrapper` parameter if you plan to write data back and use it later:
+::
+
+    from collection import OrderedDict
+    data = acf.load(f, wrapper=OrderedDict)
+    # works with other formats as well
+
 Documentation
 -------------
 

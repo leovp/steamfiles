@@ -9,6 +9,10 @@ steamfiles
     :target: https://travis-ci.org/leovp/steamfiles
     :alt: Travis-CI
 
+.. image:: https://coveralls.io/repos/github/leovp/steamfiles/badge.svg
+    :target: https://coveralls.io/github/leovp/steamfiles
+    :alt: Coverage
+
 | Python library for parsing the most common Steam file formats.
 | The library has a familiar JSON-like interface: ``load()`` / ``loads()`` for loading the data,
 | and ``dump()`` / ``dumps()`` for saving the data back to the file.

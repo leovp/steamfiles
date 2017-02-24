@@ -90,12 +90,19 @@ class AppinfoDecoder:
         # These should always be present.
         header_fields = ('version', 'universe')
         header = self.wrapper((zip(header_fields, self.read_vdf_header())))
-        assert len(header) == len(header_fields)
+        if len(header) != len(header_fields):
+            raise ValueError('Not all VDF headers are present, only found {num}: {header!r}'.format(
+                num=len(header),
+                header=header,
+            ))
 
         # Currently these are the only possible values for
         # a valid appinfo.vdf
-        assert header['version'] == VDF_VERSION
-        assert header['universe'] == VDF_UNIVERSE
+        if header['version'] != VDF_VERSION:
+            raise ValueError('Unknown VDF_VERSION: 0x{0:08x}'.format(header['version']))
+
+        if header['universe'] != VDF_UNIVERSE:
+            raise ValueError('Unknown VDF_UNIVERSE: 0x{0:08x}'.format(header['version']))
 
         # Parsing applications
         app_fields = ('size', 'state', 'last_update', 'access_token', 'checksum', 'change_number')
@@ -108,7 +115,11 @@ class AppinfoDecoder:
 
             # All fields are required.
             app = self.wrapper((zip(app_fields, self.read_game_header())))
-            assert len(app) == len(app_fields)
+            if len(app) != len(app_fields):
+                raise ValueError('Not all App headers are present, only found {num}: {header!r}'.format(
+                    num=len(app),
+                    header=app,
+                ))
 
             app['sections'] = self.wrapper()
             while True:

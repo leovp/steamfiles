@@ -10,7 +10,7 @@ def read(fname):
 
 setuptools.setup(
     name='steamfiles',
-    version='0.1.2',
+    version='0.1.3',
     url='https://github.com/leovp/steamfiles',
     license='MIT',
 

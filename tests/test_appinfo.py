@@ -17,7 +17,15 @@ def vdf_data():
 @pytest.mark.usefixtures('vdf_data')
 def test_loads_dumps(vdf_data):
     loaded = appinfo.loads(vdf_data)
-    assert appinfo.dumps(sort_dict(loaded)) == vdf_data
+
+    # Remove internal helpers, so that they don't interfere with sorting.
+    version, universe = loaded.pop(b'__vdf_version'), loaded.pop(b'__vdf_universe')
+    sorted_data = sort_dict(loaded)
+
+    # Put internal helpers back in to ensure correct encoding.
+    sorted_data.update({b'__vdf_version': version, b'__vdf_universe': universe})
+
+    assert appinfo.dumps(sorted_data) == vdf_data
 
 
 @pytest.mark.usefixtures('vdf_data')
@@ -32,7 +40,15 @@ def test_load_dump(vdf_data):
     with open(test_file_name, 'rb') as in_file:
         out_file = io.BytesIO()
         loaded = appinfo.load(in_file)
-        appinfo.dump(sort_dict(loaded), out_file)
+
+        # Remove internal helpers, so that they don't interfere with sorting.
+        version, universe = loaded.pop(b'__vdf_version'), loaded.pop(b'__vdf_universe')
+        sorted_data = sort_dict(loaded)
+
+        # Put internal helpers back in to ensure correct encoding.
+        sorted_data.update({b'__vdf_version': version, b'__vdf_universe': universe})
+
+        appinfo.dump(sorted_data, out_file)
 
     # Rewind to the beginning
     out_file.seek(0)

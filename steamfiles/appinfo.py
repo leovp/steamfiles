@@ -3,7 +3,7 @@ from collections import namedtuple
 
 __all__ = ('load', 'loads', 'dump', 'dumps')
 
-VDF_VERSION = 0x07564426
+VDF_VERSIONS = [0x07564426, 0x07564427]
 VDF_UNIVERSE = 0x00000001
 
 LAST_SECTION = b'\x00'
@@ -98,11 +98,14 @@ class AppinfoDecoder:
 
         # Currently these are the only possible values for
         # a valid appinfo.vdf
-        if header['version'] != VDF_VERSION:
+        if header['version'] not in VDF_VERSIONS:
             raise ValueError('Unknown VDF_VERSION: 0x{0:08x}'.format(header['version']))
 
         if header['universe'] != VDF_UNIVERSE:
             raise ValueError('Unknown VDF_UNIVERSE: 0x{0:08x}'.format(header['version']))
+
+        # Store VDF_VERSION and VDF_UNIVERSE internally, as it's needed for proper encoding.
+        parsed[b'__vdf_version'], parsed[b'__vdf_universe'] = header['version'], header['universe']
 
         # Parsing applications
         app_fields = ('size', 'state', 'last_update', 'access_token', 'checksum', 'change_number')
@@ -216,9 +219,13 @@ class AppinfoEncoder:
 
     def iter_encode(self):
         # VDF Header
-        yield struct.pack('<2I', VDF_VERSION, VDF_UNIVERSE)
+        yield struct.pack('<2I', self.data[b'__vdf_version'], self.data[b'__vdf_universe'])
 
         for app_id, app_data in self.data.items():
+            # Don't encode internal variables.
+            if app_id in (b'__vdf_version', b'__vdf_universe'):
+                continue
+
             # Game Header
             yield struct.pack('<I', app_id)
             yield struct.pack('<3IQ20sI', app_data['size'], app_data['state'],

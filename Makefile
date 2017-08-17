@@ -29,7 +29,7 @@ coverage:
 	coverage html
 
 test:
-	py.test
+	py.test -v
 
 test-all:
 	tox

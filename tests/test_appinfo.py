@@ -5,12 +5,15 @@ from collections import OrderedDict
 from steamfiles import appinfo
 from . import sort_dict
 
-test_file_name = os.path.join(os.path.dirname(__file__), 'test_data/appinfo.vdf')
+
+@pytest.fixture(name='vdf_path', params=['appinfo_4426.vdf', 'appinfo_4427.vdf'])
+def _vdf_path(request):
+    return os.path.join(os.path.dirname(__file__), 'test_data/' + request.param)
 
 
 @pytest.fixture(name='vdf_data')
-def _vdf_data():
-    with open(test_file_name, 'rb') as f:
+def _vdf_data(vdf_path):
+    with open(vdf_path, 'rb') as f:
         yield f.read()
 
 
@@ -33,8 +36,8 @@ def test_loads_dumps_with_wrapper(vdf_data):
     assert appinfo.dumps(loaded) == vdf_data
 
 
-def test_load_dump(vdf_data):
-    with open(test_file_name, 'rb') as in_file:
+def test_load_dump(vdf_data, vdf_path):
+    with open(vdf_path, 'rb') as in_file:
         out_file = io.BytesIO()
         loaded = appinfo.load(in_file)
 
@@ -52,8 +55,8 @@ def test_load_dump(vdf_data):
     assert out_file.read() == vdf_data
 
 
-def test_load_dump_with_wrapper(vdf_data):
-    with open(test_file_name, 'rb') as in_file:
+def test_load_dump_with_wrapper(vdf_data, vdf_path):
+    with open(vdf_path, 'rb') as in_file:
         out_file = io.BytesIO()
         loaded = appinfo.load(in_file, wrapper=OrderedDict)
         appinfo.dump(loaded, out_file)

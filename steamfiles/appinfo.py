@@ -124,22 +124,26 @@ class AppinfoDecoder:
                     header=app,
                 ))
 
-            app['sections'] = self.wrapper()
-            while True:
-                section_id = self.read_byte()
-                if not section_id:
-                    break
+            # The newest VDF format is a bit simpler to parse.
+            if header['version'] == 0x07564427:
+                app['sections'] = self.parse_subsections()
+            else:
+                app['sections'] = self.wrapper()
+                while True:
+                    section_id = self.read_byte()
+                    if not section_id:
+                        break
 
-                # Skip the 0x00 byte before section name.
-                self.offset += 1
+                    # Skip the 0x00 byte before section name.
+                    self.offset += 1
 
-                section_name = self.read_string()
-                app['sections'][section_name] = self.parse_subsections(root_section=True)
+                    section_name = self.read_string()
+                    app['sections'][section_name] = self.parse_subsections(root_section=True)
 
-                # New Section ID's could be added in the future, or changes could be made to
-                # existing ones, so instead of maintaining a table of section names and their
-                # corresponding IDs, we are going to store the IDs with all the data.
-                app['sections'][section_name][b'__steamfiles_section_id'] = section_id
+                    # New Section ID's could be added in the future, or changes could be made to
+                    # existing ones, so instead of maintaining a table of section names and their
+                    # corresponding IDs, we are going to store the IDs with all the data.
+                    app['sections'][section_name][b'__steamfiles_section_id'] = section_id
 
             parsed[app_id] = app
 
@@ -216,6 +220,7 @@ class AppinfoEncoder:
 
     def __init__(self, data):
         self.data = data
+        self.version = self.data[b'__vdf_version']
 
     def iter_encode(self):
         # VDF Header
@@ -232,16 +237,20 @@ class AppinfoEncoder:
                               app_data['last_update'], app_data['access_token'],
                               app_data['checksum'], app_data['change_number'])
 
-            for section_name, section_data in app_data['sections'].items():
-                # Delete '_section_id' from the dictionary, as it was placed there by
-                # the decoding class only to preserve the section id number.
-                section_id = section_data[b'__steamfiles_section_id']
+            # Once again, new VDF format is much simpler.
+            if self.version == 0x07564427:
+                yield from self.iter_encode_section(app_data['sections'])
+            else:
+                for section_name, section_data in app_data['sections'].items():
+                    # Delete '_section_id' from the dictionary, as it was placed there by
+                    # the decoding class only to preserve the section id number.
+                    section_id = section_data[b'__steamfiles_section_id']
 
-                yield struct.pack('<H', section_id)
-                yield self.encode_string(section_name)
-                yield from self.iter_encode_section(section_data, root_section=True)
+                    yield struct.pack('<H', section_id)
+                    yield self.encode_string(section_name)
+                    yield from self.iter_encode_section(section_data, root_section=True)
 
-            yield LAST_SECTION
+                yield LAST_SECTION
 
         yield LAST_APP
 

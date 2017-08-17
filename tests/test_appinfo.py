@@ -8,13 +8,12 @@ from . import sort_dict
 test_file_name = os.path.join(os.path.dirname(__file__), 'test_data/appinfo.vdf')
 
 
-@pytest.yield_fixture
-def vdf_data():
+@pytest.fixture(name='vdf_data')
+def _vdf_data():
     with open(test_file_name, 'rb') as f:
         yield f.read()
 
 
-@pytest.mark.usefixtures('vdf_data')
 def test_loads_dumps(vdf_data):
     loaded = appinfo.loads(vdf_data)
 
@@ -28,14 +27,12 @@ def test_loads_dumps(vdf_data):
     assert appinfo.dumps(sorted_data) == vdf_data
 
 
-@pytest.mark.usefixtures('vdf_data')
 def test_loads_dumps_with_wrapper(vdf_data):
     loaded = appinfo.loads(vdf_data, wrapper=OrderedDict)
     assert isinstance(loaded, OrderedDict)
     assert appinfo.dumps(loaded) == vdf_data
 
 
-@pytest.mark.usefixtures('vdf_data')
 def test_load_dump(vdf_data):
     with open(test_file_name, 'rb') as in_file:
         out_file = io.BytesIO()
@@ -55,7 +52,6 @@ def test_load_dump(vdf_data):
     assert out_file.read() == vdf_data
 
 
-@pytest.mark.usefixtures('vdf_data')
 def test_load_dump_with_wrapper(vdf_data):
     with open(test_file_name, 'rb') as in_file:
         out_file = io.BytesIO()

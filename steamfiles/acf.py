@@ -12,7 +12,7 @@ def loads(data, wrapper=dict):
     :return: An Ordered Dictionary with ACF data.
     """
     if not isinstance(data, str):
-        raise TypeError('can only load a str as an ACF')
+        raise TypeError('can only load a str as an ACF but got ' + type(data).__name__)
 
     parsed = wrapper()
     current_section = parsed
@@ -59,7 +59,7 @@ def dumps(obj):
     :return: ACF data.
     """
     if not isinstance(obj, dict):
-        raise TypeError('can only dump a dictionary as an ACF')
+        raise TypeError('can only dump a dictionary as an ACF but got ' + type(obj).__name__)
 
     return '\n'.join(_dumps(obj, level=0)) + '\n'
 

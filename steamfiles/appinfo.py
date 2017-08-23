@@ -37,7 +37,7 @@ def loads(data, wrapper=dict):
     :return: An Ordered Dictionary with Appinfo data.
     """
     if not isinstance(data, (bytes, bytearray)):
-        raise TypeError('can only load a bytes-like object as an Appinfo')
+        raise TypeError('can only load a bytes-like object as an Appinfo but got ' + type(data).__name__)
 
     return AppinfoDecoder(data, wrapper=wrapper).decode()
 
@@ -58,7 +58,7 @@ def dumps(obj):
     :return:
     """
     if not isinstance(obj, dict):
-        raise TypeError('can only dump a dictionary as an Appinfo')
+        raise TypeError('can only dump a dictionary as an Appinfo but got ' + type(obj).__name__)
 
     return b''.join(AppinfoEncoder(obj).iter_encode())
 
@@ -271,7 +271,7 @@ class AppinfoEncoder:
             elif isinstance(value, Integer):
                 yield from self.encode_integer(key, value)
             else:
-                raise TypeError('Unknown value type')
+                raise TypeError('Unknown value type ' + type(value).__name__)
 
         yield SECTION_END
         if root_section:

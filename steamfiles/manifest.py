@@ -51,7 +51,7 @@ def loads(data, wrapper=dict):
     :return: A dictionary with Manifest data.
     """
     if not isinstance(data, (bytes, bytearray)):
-        raise TypeError('can only load a bytes-like object as a Manifest')
+        raise TypeError('can only load a bytes-like object as a Manifest but got ' + type(data).__name__)
 
     offset = 0
     parsed = wrapper()
@@ -94,7 +94,7 @@ def dumps(obj):
     :return: A file object.
     """
     if not isinstance(obj, dict):
-        raise TypeError('can only dump a dictionary as a Manifest')
+        raise TypeError('can only dump a dictionary as a Manifest but got ' + type(obj).__name__)
 
     data = []
     int32 = struct.Struct('<I')

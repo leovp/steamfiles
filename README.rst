@@ -33,7 +33,7 @@ Format support
 Quickstart
 ----------
 
-`steamfiles` requires Python 3.3+
+`steamfiles` requires Python 3.5+
 
 Install the latest stable version:
 

@@ -14,7 +14,7 @@ def read(fname):
 
 setuptools.setup(
     name='steamfiles',
-    version='0.1.3',
+    version='0.1.4',
     url='https://github.com/leovp/steamfiles',
     license='MIT',
 

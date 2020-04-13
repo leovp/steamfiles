@@ -1,3 +1,4 @@
+from io import open
 import os
 import setuptools
 # This is not recommanded by the development team. You should change the way you parse requirements

@@ -1,8 +1,10 @@
+from io import open
 import os
 import setuptools
-try: # for pip >= 10
+# This is not recommanded by the development team. You should change the way you parse requirements
+try: # for pip >= 20
     from pip._internal.req import parse_requirements
-    from pip._internal.download import PipSession
+    from pip._internal.network.session import PipSession # this should fix installation problems for pip>=20
 except ImportError: # for pip <= 9.0.3
     from pip.req import parse_requirements
     from pip.download import PipSession

@@ -1,12 +1,5 @@
 import os
 import setuptools
-try: # for pip >= 10
-    from pip._internal.req import parse_requirements
-    from pip._internal.download import PipSession
-except ImportError: # for pip <= 9.0.3
-    from pip.req import parse_requirements
-    from pip.download import PipSession
-
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname), encoding='utf-8').read()
@@ -31,15 +24,9 @@ setuptools.setup(
     platforms=['any'],
     packages=setuptools.find_packages(exclude=['tests']),
 
-    install_requires=[
-        str(req.req) for req in parse_requirements('requirements.txt',
-                                                   session=PipSession())
-        ],
+    install_requires=read('requirements.txt').splitlines(),
 
-    tests_require=[
-        str(req.req) for req in parse_requirements('requirements_test.txt',
-                                                   session=PipSession())
-        ],
+    tests_require=read('requirements_test.txt').splitlines(),
 
     classifiers=[
         'Development Status :: 4 - Beta',
